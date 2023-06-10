@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int     @id @default(autoincrement())
+  name             String
+  email            String  @unique
+  phone            String
+  password         String
+  confirmedAccount Boolean
+  rating           Int // Pontuação geral do cliente
+
+  user_scheduling User_scheduling[]
+
+  @@map("users")
+}
+
+model User_scheduling {
+  id           Int      @id @default(autoincrement())
+  company_name String
+  company_id   Int
+  date         DateTime
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("user_schedulings")
+}
+
+model Company {
+  id                 Int                  @id @default(autoincrement())
+  name               String // Nome fantasia
+  social             String // Razão social
+  popular_name       String // Nome pelo qual a empresa é conhecida (nome comercial)
+  cnpj               String               @unique
+  main_phone         String // Telefone principal
+  second_phone       String // Telefone secundário
+  main_email         String               @unique // Email principal
+  second_email       String               @unique // Email secundário
+  password           String
+  confirmedAccount   Boolean // Verifica se a conta ja foi verificada por e-mail
+  rating             Int? // Pontuação geral dos serviços e atendimento da empresa
+  scheduling_rules   Scheduling_rules[] // Regras de agendamentos da empresa
+  company_scheduling Company_scheduling[] // Tabela com todos os agendamentos feitos 
+
+  @@map("companies")
+}
+
+model Company_scheduling {
+  id          Int      @id @default(autoincrement())
+  client_name String
+  client_id   Int
+  date        DateTime
+
+  Company   Company? @relation(fields: [companyId], references: [id])
+  companyId Int
+
+  @@map("company_schedulings")
+}
+
+model Scheduling_rules {
+  id       Int      @id @default(autoincrement())
+  active   Boolean // Define se a agenda estará aberta ou fechada
+  workdays String[] // Dias normais de trabalho
+  worktime String[] // Define em quais horários serão disponíveis para agendamento
+  services Json // Objeto com todos os serviços disponíveis a agndamento. (Ver documentação do Prisma como funciona o JSON com Prisma)
+  date_off String[] // Dia(s) escolhido pela empresa, em que não será aberto os agendamentos. (Feriados ou outros)
+
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId Int?
+
+  @@map("scheduling_rules")
+}
+
+//exemple_services = [{
+//  nome: corte, 
+//  tempo: 30m
+//},
+//{
+//  nome: barba,
+//  tempo: 15m
+//}]
