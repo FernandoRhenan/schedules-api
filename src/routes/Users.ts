@@ -1,7 +1,25 @@
-import { Router } from 'express'
-import { Register_user } from '../controllers/User_controller'
-const routes = Router()
+import { Router } from "express";
+import { UserRouteController } from "../controllers/User_controller";
+import { UserServiceImpl } from "../services/impl/UserServiceImpl";
+import { UserDAO } from "../repositories/impl/UserDAO";
+const routes = Router();
 
-routes.post('/register')
+//como a tipagem e a msm posso declarar a funcao assim sem executar
+routes.post(
+  "/register",
 
-export default routes
+  // isso e a segregação de interface viu q coisa feia? mas é funcional
+  (req, res) => {
+    //por algum motivo express agr nao pode declarar em memoria a classe entao abrimos
+    //uma funcao e passamos numa variavel a service :/
+    const service = new UserRouteController(new UserServiceImpl(new UserDAO()));
+    service.register(req, res);
+  }
+);
+
+routes.get("/allusers", (req, res) => {
+  const service = new UserRouteController(new UserServiceImpl(new UserDAO()));
+  service.allUsers(req, res);
+});
+
+export default routes;
