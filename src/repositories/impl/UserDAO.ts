@@ -17,28 +17,21 @@ export class UserDAO implements UserRepository {
     throw new Error("Method not implemented.");
   }
   async createNewUser(user: IUser): Promise<IDefaultReturn> {
-    const { email, name, password, phone, } = user
+    const { email, name, password, phone, authCode } = user
     try {
-      const usersCount = await prisma.user.count({
+      const usersCount: number = await prisma.user.count({
         where: { email: email }
       })
       if (usersCount !== 0) {
-        return { data: null, error: true, message: "E-mail já cadastrado" }
+        return { data: null, error: true, message: "E-mail já cadastrado.", status: 400 }
       } else {
-
-        const hashedPassword = "Fazer criptografia da senha (bcrypt)"
-
         await prisma.user.create({
-          data: { name: name, email: email, confirmedAccount: false, password: hashedPassword, phone: phone, rating: 0 }
+          data: { name: name, email: email, confirmedAccount: false, password: password, phone: phone, rating: 0, authCode: authCode }
         })
-
-        // ### Gerar código para verificação de email ###
-
-        return { data: null /*Retornar código*/, error: false, message: "Usuário criado com sucesso." }
-
+        return { data: null, error: false, message: "Usuário criado com sucesso.", status: 201 }
       }
     } catch {
-      return { data: null, error: true, message: "Ocorreu um erro. Por favor tente novamente mais tarde." }
+      return { data: null, error: true, message: "Ocorreu um erro. Por favor tente novamente mais tarde.", status: 500 }
     }
 
   }

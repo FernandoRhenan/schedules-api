@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserRouteController } from "../controllers/User_controller";
+import { UserRouteController } from "../controllers/UserController";
 import { UserServiceImpl } from "../services/impl/UserServiceImpl";
 import { UserDAO } from "../repositories/impl/UserDAO";
 const routes = Router();

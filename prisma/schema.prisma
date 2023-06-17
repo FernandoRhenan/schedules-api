@@ -17,6 +17,7 @@ model User {
   phone            String
   password         String
   confirmedAccount Boolean
+  authCode         String
   rating           Int // Pontuação geral do cliente
 
   user_scheduling User_scheduling[]
