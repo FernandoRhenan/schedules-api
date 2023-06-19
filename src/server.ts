@@ -1,8 +1,7 @@
-import dotenv from "dotenv";
-dotenv.config();
 import cors from 'cors';
 import express from "express";
 import user_routes from "./routes/userRoutes";
+import { PORT_API } from './utils/enviroments';
 
 const server = express();
 server.use(express.json())
@@ -11,7 +10,6 @@ server.use(cors())
 
 server.use("/api/user", user_routes);
 
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log("Server rodando na porta " + port);
+server.listen(PORT_API, () => {
+  console.log("Server rodando na porta " + PORT_API);
 });
