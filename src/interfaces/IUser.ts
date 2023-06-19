@@ -6,5 +6,5 @@ export interface IUser {
   phone: string;
   rating: number;
   confirmedAccount: boolean;
-  confirmationCode: string
+  authCode: string
 }

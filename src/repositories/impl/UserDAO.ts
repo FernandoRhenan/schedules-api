@@ -7,15 +7,17 @@ import { UserRepository } from "../UserRepository";
 
 //nesse aquivo vc irá editar cada coisa que o banco ira fazer
 export class UserDAO implements UserRepository {
-  async getAllUsers(take?: number | undefined): Promise<IUser[]> {
+  async getAllUsers(take?: number | undefined): Promise<IDefaultReturn> {
     const user = await prisma.user.findMany({
       take: take,
     });
-    return user;
+    return { data: user, error: false, message: "Dados buscados com sucesso.", status: 200 }
   }
+
   editUser(id: number): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
+
   async createNewUser(user: IUser): Promise<IDefaultReturn> {
     const { email, name, password, phone, authCode } = user
     try {
@@ -25,11 +27,13 @@ export class UserDAO implements UserRepository {
       if (usersCount !== 0) {
         return { data: null, error: true, message: "E-mail já cadastrado.", status: 400 }
       } else {
-        await prisma.user.create({
-          data: { name: name, email: email, confirmedAccount: false, password: password, phone: phone, rating: 0, authCode: authCode }
+        const user = await prisma.user.create({
+          data: { name: name, email: email, confirmedAccount: false, password: password, phone: phone, rating: 0, authCode: authCode },
+          select: { id: true, authCode: true }
         })
-        return { data: null, error: false, message: "Usuário criado com sucesso.", status: 201 }
+        return { data: user, error: false, message: "Usuário criado com sucesso.", status: 201 }
       }
+
     } catch {
       return { data: null, error: true, message: "Ocorreu um erro. Por favor tente novamente mais tarde.", status: 500 }
     }
