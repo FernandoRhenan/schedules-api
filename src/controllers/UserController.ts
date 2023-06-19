@@ -11,8 +11,8 @@ export class UserRouteController {
   async register(req: Request, res: Response): Promise<void> {
     //req.body.user vao ser os dados enviados do mobile pra api (verificação dos dados feita no mobile)
     try {
-      const user = await this.service.createNewUser(req.body.user);
-      res.status(201).json(user);
+      const returned = await this.service.createNewUser(req.body);
+      res.status(returned.status).json(returned);
     } catch (error) {
       res.status(500);
     }
@@ -20,8 +20,8 @@ export class UserRouteController {
 
   async allUsers(req: Request, res: Response): Promise<void> {
     try {
-      const users = await this.service.getAllUsers();
-      res.status(200).json(users);
+      const returned = await this.service.getAllUsers();
+      res.status(returned.status).json(returned);
     } catch (error) {
       res.status(500);
     }
