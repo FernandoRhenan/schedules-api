@@ -17,6 +17,11 @@ routes.post(
   }
 );
 
+routes.post('/send-email', (req, res) => {
+  const service = new UserRouteController(new UserServiceImpl(new UserDAO()));
+  service.sendEmail(req, res)
+});
+
 routes.get("/allusers", (req, res) => {
   const service = new UserRouteController(new UserServiceImpl(new UserDAO()));
   service.allUsers(req, res);
