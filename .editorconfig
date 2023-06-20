@@ -1,0 +1,8 @@
+root = true
+# Definir o estilo de indentação padrão para espaços
+[*]
+indent_style = space
+
+# Definir o tamanho da tabulação para 2 espaços
+[*]
+indent_size = 2
